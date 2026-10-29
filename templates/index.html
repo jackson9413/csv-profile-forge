@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>csv-profile-forge - data quality workbench</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">◧</span>
+    <div>
+      <h1>csv-profile-forge</h1>
+      <p class="tagline">Paste a CSV. Get a column profile, prioritized fixes, a cleaning plan and a cleaned file.</p>
+    </div>
+  </div>
+  <div class="toplinks">
+    <span class="local-badge">100% local &middot; no API keys</span>
+    <a class="gh" href="https://github.com/jackson9413/csv-profile-forge" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="panel input-panel">
+    <h2>1. Paste the data</h2>
+    <p class="hint">CSV, TSV, semicolon or pipe delimited. Nothing leaves this machine.</p>
+
+    <label class="field">
+      <span>Dataset name</span>
+      <input id="datasetName" type="text" placeholder="orders-export" value="orders-export">
+    </label>
+
+    <div class="field-row">
+      <label class="field">
+        <span>What is this for?</span>
+        <select id="purpose">
+          {% for p in purposes %}
+          <option value="{{ p.key }}">{{ p.label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span>Delimiter</span>
+        <select id="delimiter">
+          <option value="auto">Auto-detect</option>
+          <option value=",">Comma</option>
+          <option value="tab">Tab</option>
+          <option value=";">Semicolon</option>
+          <option value="|">Pipe</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="field-row">
+      <label class="field">
+        <span>Key columns (optional)</span>
+        <input id="keyColumns" type="text" placeholder="order_id, email">
+      </label>
+      <label class="field">
+        <span>Expected rows (optional)</span>
+        <input id="expectedRows" type="number" min="0" placeholder="1000">
+      </label>
+    </div>
+
+    <label class="checkline">
+      <input id="hasHeader" type="checkbox" checked>
+      <span>First row is a header</span>
+    </label>
+
+    <label class="field">
+      <span>Delimited data</span>
+      <textarea id="csvInput" rows="14" spellcheck="false" placeholder="order_id,customer,total&#10;1001,Alice,39.98"></textarea>
+    </label>
+
+    <div class="buttons">
+      <button id="runBtn" class="primary">Profile dataset</button>
+      <button id="sampleBtn" class="ghost">Load messy sample</button>
+      <button id="clearBtn" class="ghost">Clear</button>
+    </div>
+    <p id="errorBox" class="error hidden"></p>
+  </section>
+
+  <section class="panel results-panel">
+    <div id="emptyState" class="empty-state">
+      <h2>2. Read the report</h2>
+      <p>Paste data on the left and press <strong>Profile dataset</strong>. You will get:</p>
+      <ul>
+        <li>Column-by-column profile: type, missingness, uniqueness, top values, outliers</li>
+        <li>Prioritized findings with the offending row numbers and a concrete fix</li>
+        <li>A 5-axis quality score (completeness, consistency, validity, uniqueness, structure)</li>
+        <li>A cleaning plan, plus a downloadable CSV with the safe fixes already applied</li>
+      </ul>
+    </div>
+
+    <div id="report" class="hidden">
+      <div class="score-head">
+        <div class="score-block">
+          <span class="score-value" id="scoreValue">0</span>
+          <span class="score-max">/100</span>
+        </div>
+        <div class="score-meta">
+          <h2 id="reportName">dataset</h2>
+          <div class="chips" id="metaChips"></div>
+          <span class="verdict" id="verdictPill">-</span>
+        </div>
+        <div class="export-box" id="exportBox">
+          <span class="export-label">Export</span>
+          <a id="exportMd" class="btn-link" href="#">Markdown</a>
+          <a id="exportJson" class="btn-link" href="#">JSON</a>
+          <a id="exportCsv" class="btn-link accent" href="#">Cleaned CSV</a>
+        </div>
+      </div>
+
+      <div class="axis-row" id="axisRow"></div>
+
+      <h3>Checks</h3>
+      <div class="check-grid" id="checkGrid"></div>
+
+      <h3>Findings <span class="count" id="findingCount"></span></h3>
+      <div id="findingsList" class="findings"></div>
+
+      <h3>Cleaning plan</h3>
+      <ol class="plan" id="cleaningPlan"></ol>
+
+      <h3>Column profiles</h3>
+      <div class="table-wrap">
+        <table class="profile-table" id="profileTable"></table>
+      </div>
+
+      <h3>Preview</h3>
+      <div class="table-wrap">
+        <table class="preview-table" id="previewTable"></table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section class="panel history-panel">
+  <div class="history-head">
+    <h2>History</h2>
+    <p class="hint">Every profile is saved locally in SQLite. Reopen one to review it or export it again.</p>
+  </div>
+  <div id="historyList" class="history"></div>
+</section>
+
+<footer>
+  <span>csv-profile-forge &middot; Flask + SQLite + vanilla JS &middot; standard library analysis engine</span>
+</footer>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

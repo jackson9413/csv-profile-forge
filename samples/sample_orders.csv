@@ -1,0 +1,10 @@
+order_id,customer_name,email,order_date,status,quantity,unit_price,total,discount_pct,notes,region,channel
+1001,Alice Smith,alice@example.com,2026-01-05,shipped,2,19.99,39.98,0,Gift wrap,Austin,web
+1002, Bob Jones ,bob@example.com,2026-01-06,Shipped,1,24.50,$24.50,10,Call on delivery,Round Rock,web
+1003,Carol White,carol@example.com,01/07/2026,pending,3,10.00,30.00,0,,Austin,web
+1004,Dave Green,N/A,2026-01-08,shipped,1,5.00,9.99,5,Total does not match,Houston,web
+1005,Erin Black,erin@example.com,2026-01-09,SHIPPED,2,15.00,30.00,0,,Austin,web
+1006,Frank Hall,frank@example.com,2026-01-10,shipped,1,12.00,12.00,150,Discount over 100,Houston,web
+1007,Grace Ivy,grace@example.com,2026-01-11,shipped,2,8.00,16.00,0,Extra field,Houston,web,extra
+1008,Heidi Blue,heidi@example.com,2026-01-12,shipped,1,9.99,9.99,0,Duplicate row,Round Rock,web
+1008,Heidi Blue,heidi@example.com,2026-01-12,shipped,1,9.99,9.99,0,Duplicate row,Round Rock,web
